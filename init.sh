@@ -94,6 +94,25 @@ Format() {
     done
 }
 
+Mount() {
+    echo "Mounting root, type the partition:"
+    read ANSW
+    mount $ANSW /mnt
+    echo "Mounting home, type the partition:"
+    read ANSW
+    mkdir /mnt/home && mount $ANSW /mnt/home
+    echo "Mounting boot, type the partition:"
+    echo "(note that grub will be used.)"
+    read ANSW
+    mkdir -p /mnt/boot/efi && mount $ANSW /mnt/boot/efi
+}
+
+Mirrorlist() {
+    vim /etc/pacman.d/mirrorlist
+    echo "Installing the base packages."
+    pacstrap /mnt base base-devel
+}
+
 # Init
 echo "Welcome to PARIS (Personal Arch linux Installation Script)."
 Menu
@@ -104,8 +123,8 @@ case $CHOICE in
     3) timedatectl set-ntp true;;
     4) Disk;;
     5) Format;;
-    6);;
-    7);;
+    6) Mount;;
+    7) Mirrorlist;;
     8);;
     9);;
 esac
