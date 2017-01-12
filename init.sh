@@ -8,16 +8,18 @@ Menu() {
         echo "1 - Set keyboard"
         echo "2 - Connect to wifi"
         echo "3 - Update system clock"
-        echo "4 - Partition and format the disk"
-        echo "5 - Mount the file systems"
-        echo "6 - Change mirrorlist and install base"
-        echo "7 - Genfstab & Chroot"
-        echo "8 - Configure the new system"
+        echo "4 - Partition the disk"
+        echo "5 - Format the partitions"
+        echo "6 - Mount the file systems"
+        echo "7 - Change mirrorlist and install base"
+        echo "8 - Genfstab & Chroot"
+        echo "9 - Configure the new system"
         echo "0 - Exit script"
         read CHOICE
     done
 }
 
+# Useful
 Read_choice() {
     read ANSW
     ANSW=$( echo $ANSW | tr "[:upper:]" "[:lower:]" ) # Convert to lower case
@@ -66,6 +68,32 @@ Disk() {
         FINISHED=ANSW
     done 
 }
+
+Format() {
+    echo "Format de partitions."
+    FINISHED=n
+    while [ $FINISHED != y ]; do 
+        echo "Boot partition:"
+        read ANSW
+        mkfs.fat -F32 -n Boot $ANSW
+        echo "Swap:"
+        mkswap -L  Swap $ANSW && swapon $ANSW
+        echo "Root:"
+        read ANSW
+        mkfs.ext4 -L Root $ANSW
+        echo "Want to format some /home partition? [y/n]"
+        Read_choice
+        if [ $ANSW = y ] then;
+            echo "/home:"
+            read ANSW
+            mkfs.ext4 $ANSW
+        fi
+        echo "Done? [y/n]"
+        Read_choice
+        FINISHED=ANSW
+    done
+}
+
 # Init
 echo "Welcome to PARIS (Personal Arch linux Installation Script)."
 Menu
@@ -75,8 +103,9 @@ case $CHOICE in
     2) Wifi;;
     3) timedatectl set-ntp true;;
     4) Disk;;
-    5);;
+    5) Format;;
     6);;
     7);;
     8);;
+    9);;
 esac
