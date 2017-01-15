@@ -134,6 +134,14 @@ Inside_chroot() {
     mkinitcpio -p linux
     passwd
     # Bootloader
+    echo "Installing bootloader (grub)"
+    pacman -S grub efibootmgr
+    echo "Device to install: "
+    Read_choice
+    grub-install $ANSW
+    grub-mkconfig -o /boot/grub/grub.cfg
+    echo "Defining root passwd."
+    passwd
     # Desktop Environment
 }
 
