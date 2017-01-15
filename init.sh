@@ -34,7 +34,7 @@ Keyboard() {
     fi
     echo "Choosen layout: "
     read ANSW
-    loadkeys ANSW
+    loadkeys $ANSW
 }
 
 # Connects to wifi and tests the connection
@@ -53,30 +53,30 @@ Wifi() {
 }
 
 Disk() {
-    FINISHED=n
-    while [ $FINISHED != y ]; do
+    ANSW=n
+    while [ $ANSW != y ]; do
         echo "List devices? [y/n]"
         Read_choice
         if [ $ANSW = y ]; then
             fdisk -l
         fi
-        echo "Device to be used (/dev/sda, etc.):"
+        echo -e "\nDevice to be used (/dev/sda, etc.):"
         read ANSW
-        fdisk ANSW
+        fdisk $ANSW
         echo "Done? [y/n]"
         Read_choice
-        FINISHED=ANSW
     done 
 }
 
 Format() {
     echo "Format de partitions."
-    FINISHED=n
-    while [ $FINISHED != y ]; do 
+    ANSW=n
+    while [ $ANSW != y ]; do 
         echo "Boot partition:"
         read ANSW
         mkfs.fat -F32 -n Boot $ANSW
         echo "Swap:"
+        read $ANSW
         mkswap -L  Swap $ANSW && swapon $ANSW
         echo "Root:"
         read ANSW
@@ -90,7 +90,6 @@ Format() {
         fi
         echo "Done? [y/n]"
         Read_choice
-        FINISHED=ANSW
     done
 }
 
@@ -117,6 +116,9 @@ Genfstab() {
     echo "Generating file systems table"
     genfstab -p /mnt >> /mnt/etc/fstab
     echo "Chrooting on the system."
+    echo "Execute the second script."
+    echo "(./second.sh)"
+    cp second.sh /mnt
     arch-chroot /mnt
 }
 
@@ -152,7 +154,7 @@ case $CHOICE in
     0) return ;;
     1) Keyboard;;
     2) Wifi;;
-    3) timedatectl set-ntp true;;
+    3) echo "Updating..." && timedatectl set-ntp true;;
     4) Disk;;
     5) Format;;
     6) Mount;;
