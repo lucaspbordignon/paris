@@ -83,7 +83,7 @@ Format() {
         mkfs.ext4 -L Root $ANSW
         echo "Want to format some /home partition? [y/n]"
         Read_choice
-        if [ $ANSW = y ] then;
+        if [ $ANSW = y ]; then
             echo "/home:"
             read ANSW
             mkfs.ext4 $ANSW
@@ -113,6 +113,30 @@ Mirrorlist() {
     pacstrap /mnt base base-devel
 }
 
+Genfstab() {
+    echo "Generating file systems table"
+    genfstab -p /mnt >> /mnt/etc/fstab
+    echo "Chrooting on the system."
+    arch-chroot /mnt
+}
+
+Inside_chroot() {
+    echo "Setting the timezone"
+    ln -s /usr/share/zoneinfo/Region/City /etc/localtime    # TODO
+    hweclock --systohc
+    vim /etc/locale.gen
+    echo "Generating locale, for language support"
+    locale-gen
+    echo "Creating a host name"
+    vim /etc/hostname
+    wifi-menu
+    pacman -S iw wpa_supplicant dialog
+    mkinitcpio -p linux
+    passwd
+    # Bootloader
+    # Desktop Environment
+}
+
 # Init
 echo "Welcome to PARIS (Personal Arch linux Installation Script)."
 Menu
@@ -125,6 +149,6 @@ case $CHOICE in
     5) Format;;
     6) Mount;;
     7) Mirrorlist;;
-    8);;
-    9);;
+    8) Genfstab;;
+    9) Inside_chroot;;
 esac
