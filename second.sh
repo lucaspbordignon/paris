@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Useful
-Read_choice() {
+Read_lower() {
     read ANSW
     ANSW=$( echo $ANSW | tr "[:upper:]" "[:lower:]" ) # Convert to lower case
 }
@@ -25,10 +25,10 @@ pacman -S iw wpa_supplicant dialog
 echo -e "\nCreating root password."
 passwd
 echo "Create a new user?[y/n]"
-Read_choice
+Read_lower
 if [ $ANSW = y ]; then
     echo "User name:"
-    read ANSW
+    Read_lower
     useradd -m -G wheel -s /bin/bash $ANSW
     passwd $ANSW
 fi
@@ -41,3 +41,6 @@ read ANSW
 grub-install $ANSW
 grub-mkconfig -o /boot/grub/grub.cfg
 # Desktop Environment
+
+# Removing this script from the system
+rm second.sh

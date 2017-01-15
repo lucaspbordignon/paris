@@ -13,14 +13,13 @@ Menu() {
         echo "6 - Mount the file systems"
         echo "7 - Change mirrorlist and install base"
         echo "8 - Genfstab & Chroot"
-        echo "9 - Configure the new system"
         echo "0 - Exit script"
         read CHOICE
     done
 }
 
 # Useful
-Read_choice() {
+Read_lower() {
     read ANSW
     ANSW=$( echo $ANSW | tr "[:upper:]" "[:lower:]" ) # Convert to lower case
 }
@@ -28,7 +27,7 @@ Read_choice() {
 # Set keyboard layout
 Keyboard() {
     echo "List layouts? [y/n]"
-    Read_choice
+    Read_lower
     if [ $ANSW = y ]; then
         less ls /usr/share/kbd/keymaps/**/*.map.gz
     fi
@@ -43,10 +42,10 @@ Wifi() {
     while [ $ANSW != y ]; do
         wifi-menu
         echo "Done? [y/n]"
-        Read_choice
+        Read_lower
     done
     echo "Test internet? [y/n]"
-    Read_choice
+    Read_lower
     if [ $ANSW = y ]; then
         ping -c3 google.com
     fi
@@ -56,7 +55,7 @@ Disk() {
     ANSW=n
     while [ $ANSW != y ]; do
         echo "List devices? [y/n]"
-        Read_choice
+        Read_lower
         if [ $ANSW = y ]; then
             fdisk -l
         fi
@@ -64,7 +63,7 @@ Disk() {
         read ANSW
         fdisk $ANSW
         echo "Done? [y/n]"
-        Read_choice
+        Read_lower
     done 
 }
 
@@ -82,14 +81,14 @@ Format() {
         read ANSW
         mkfs.ext4 -L Root $ANSW
         echo "Want to format some /home partition? [y/n]"
-        Read_choice
+        Read_lower
         if [ $ANSW = y ]; then
             echo "/home:"
             read ANSW
             mkfs.ext4 $ANSW
         fi
         echo "Done? [y/n]"
-        Read_choice
+        Read_lower
     done
 }
 
@@ -114,37 +113,12 @@ Mirrorlist() {
 
 Genfstab() {
     echo "Generating file systems table"
-    genfstab -p /mnt >> /mnt/etc/fstab
+    genfstab -p /mnt > /mnt/etc/fstab
     echo "Chrooting on the system."
     echo "Execute the second script."
     echo "(./second.sh)"
     cp second.sh /mnt
     arch-chroot /mnt
-}
-
-Inside_chroot() {
-    echo "Setting the timezone"
-    ln -s /usr/share/zoneinfo/Region/City /etc/localtime    # TODO
-    hweclock --systohc
-    vim /etc/locale.gen
-    echo "Generating locale, for language support"
-    locale-gen
-    echo "Creating a host name"
-    vim /etc/hostname
-    wifi-menu
-    pacman -S iw wpa_supplicant dialog
-    mkinitcpio -p linux
-    passwd
-    # Bootloader
-    echo "Installing bootloader (grub)"
-    pacman -S grub efibootmgr
-    echo "Device to install: "
-    Read_choice
-    grub-install $ANSW
-    grub-mkconfig -o /boot/grub/grub.cfg
-    echo "Defining root passwd."
-    passwd
-    # Desktop Environment
 }
 
 # Init
@@ -160,5 +134,4 @@ case $CHOICE in
     6) Mount;;
     7) Mirrorlist;;
     8) Genfstab;;
-    9) Inside_chroot;;
 esac
