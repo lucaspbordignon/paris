@@ -6,9 +6,10 @@ Read_lower() {
     ANSW=$( echo $ANSW | tr "[:upper:]" "[:lower:]" ) # Convert to lower case
 }
 
-echo "Installing script dependencies."
-pacman -S vim
+echo "Installing script dependencies and util packages."
+pacman -S yaourt vim xorg-xinit
 
+# Clock and language
 echo -e "\nSetting the timezone and setting hw clock."
 ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
@@ -16,12 +17,15 @@ vim /etc/locale.gen
 echo "Generating locale, for language support"
 locale-gen
 
+# Hostname
 echo -e "\nCreating a host name"
 vim /etc/hostname
 
+# Useful packages
 echo -e "\nInstalling wifi related packages and "
 pacman -S iw wpa_supplicant dialog
 
+# Creating users and passwords
 echo -e "\nCreating root password."
 passwd
 echo "Create a new user?[y/n]"
@@ -40,7 +44,35 @@ echo "Device to install: "
 read ANSW
 grub-install $ANSW
 grub-mkconfig -o /boot/grub/grub.cfg
+
+# Bumblebee
+echo "Install bumblebee? [y/n]"
+Read_lower
+if [ $ANSW = y ]; then
+    pacman -S bumblebee mesa xf86-video-intel nvidia lib32-virtualgl lib32-nvidia-utils lib32-mesa-libgl mesa-demos
+    echo "Type the user name to be added to the bumblebee group:"
+    read ANSW
+    gpasswd -a $ANSW bumblebee
+    systemctl enable bumblebeed.service
+fi
+
 # Desktop Environment
+echo "Do you want to install a desktop environment? [y/n]:"
+Read_lower
+if [ $ANSW = y ]; then
+    ANSW=0
+    while [ $ANSW -lt 1 -o $ANSW -gt 3 ]; do
+        echo "1 - Gnome (minimal)"
+        echo "2 - i3"
+        echo "3 - Gnome + i3"
+        read $ANSW
+    done
+    case $ANSW in
+        1) pacman -S gnome-shell;;
+        2) pacman -S i3 && echo "exec i3" >> /home/lucasbordignon/.xinitrc;;
+        3) ;;
+    esac
+fi
 
 # Removing this script from the system
 rm second.sh

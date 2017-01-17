@@ -1,5 +1,7 @@
 #!/bin/sh
 
+HARD_DISK=""
+
 Menu() {
     CHOICE=-1
     while [ $CHOICE -lt 0 -o $CHOICE -gt 8 ]
@@ -60,8 +62,8 @@ Disk() {
             fdisk -l
         fi
         echo -e "\nDevice to be used (/dev/sda, etc.):"
-        read ANSW
-        fdisk $ANSW
+        read HARD_DISK
+        fdisk $HARD_DISK
         echo "Done? [y/n]"
         Read_lower
     done 
