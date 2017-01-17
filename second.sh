@@ -68,7 +68,7 @@ if [ $ANSW = y ]; then
         read ANSW
     done
     case $ANSW in
-        1) pacman -S gnome-shell gdm;;
+        1) pacman -S gnome-shell gdm && systemctl enable gdm;;
         2) pacman -S i3 && echo "exec i3" >> /home/lucasbordignon/.xinitrc;;
     esac
 fi
