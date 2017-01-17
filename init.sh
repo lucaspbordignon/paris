@@ -1,20 +1,28 @@
 #!/bin/sh
 
 HARD_DISK=""
+DONE_ACTIONS_0="-"
+DONE_ACTIONS_1="-"
+DONE_ACTIONS_2="-"
+DONE_ACTIONS_3="-"
+DONE_ACTIONS_4="-"
+DONE_ACTIONS_5="-"
+DONE_ACTIONS_6="-"
+DONE_ACTIONS_7="-"
 
 Menu() {
     CHOICE=-1
     while [ $CHOICE -lt 0 -o $CHOICE -gt 8 ]
     do
         echo "Choose one option"
-        echo "1 - Set keyboard"
-        echo "2 - Connect to wifi"
-        echo "3 - Update system clock"
-        echo "4 - Partition the disk"
-        echo "5 - Format the partitions"
-        echo "6 - Mount the file systems"
-        echo "7 - Change mirrorlist and install base"
-        echo "8 - Genfstab & Chroot"
+        echo "[$DONE_ACTIONS_0] 1 - Set keyboard"
+        echo "[$DONE_ACTIONS_1] 2 - Connect to wifi"
+        echo "[$DONE_ACTIONS_2] 3 - Update system clock"
+        echo "[$DONE_ACTIONS_3] 4 - Partition the disk"
+        echo "[$DONE_ACTIONS_4] 5 - Format the partitions"
+        echo "[$DONE_ACTIONS_5] 6 - Mount the file systems"
+        echo "[$DONE_ACTIONS_6] 7 - Change mirrorlist and install base"
+        echo "[$DONE_ACTIONS_7] 8 - Genfstab & Chroot"
         echo "0 - Exit script"
         read CHOICE
     done
@@ -36,6 +44,7 @@ Keyboard() {
     echo "Choosen layout: "
     read ANSW
     loadkeys $ANSW
+    DONE_ACTIONS_0="*"
 }
 
 # Connects to wifi and tests the connection
@@ -51,6 +60,7 @@ Wifi() {
     if [ $ANSW = y ]; then
         ping -c3 google.com
     fi
+    DONE_ACTIONS_1="*"
 }
 
 Disk() {
@@ -67,6 +77,7 @@ Disk() {
         echo "Done? [y/n]"
         Read_lower
     done 
+    DONE_ACTIONS_3="*"
 }
 
 Format() {
@@ -93,6 +104,7 @@ Format() {
         echo "Done? [y/n]"
         Read_lower
     done
+    DONE_ACTIONS_4="*"
 }
 
 Mount() {
@@ -107,12 +119,14 @@ Mount() {
     echo "(note that grub will be used.)"
     read ANSW
     mkdir -p /mnt/boot/efi && mount $ANSW /mnt/boot/efi
+    DONE_ACTIONS_5="*"
 }
 
 Mirrorlist() {
     vim /etc/pacman.d/mirrorlist
     echo "Installing the base packages."
     pacstrap /mnt base base-devel
+    DONE_ACTIONS_6="*"
 }
 
 Genfstab() {
@@ -123,21 +137,25 @@ Genfstab() {
     echo "(./second.sh)"
     cp second.sh /mnt
     arch-chroot /mnt
+    DONE_ACTIONS_7="*"
 }
 
 # Init
 echo "Welcome to PARIS (Personal Arch linux Installation Script)."
 echo "Updating the pacman database, for future use."
 pacman -Syy
-Menu
-case $CHOICE in
-    0) return ;;
-    1) Keyboard;;
-    2) Wifi;;
-    3) echo "Updating..." && timedatectl set-ntp true;;
-    4) Disk;;
-    5) Format;;
-    6) Mount;;
-    7) Mirrorlist;;
-    8) Genfstab;;
-esac
+EXIT=0
+while [ $EXIT != 1 ]; do
+    Menu
+    case $CHOICE in
+        0) EXIT=1 ;;
+        1) Keyboard;;
+        2) Wifi;;
+        3) echo "Updating..." && timedatectl set-ntp true && DONE_ACTIONS_2="*";;
+        4) Disk;;
+        5) Format;;
+        6) Mount;;
+        7) Mirrorlist;;
+        8) Genfstab;;
+    esac
+done
