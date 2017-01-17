@@ -7,7 +7,7 @@ Read_lower() {
 }
 
 echo "Installing script dependencies and util packages."
-pacman -S yaourt vim xorg-xinit
+pacman -Sy yaourt vim xorg-server xorg-xinit iw wpa_supplicant dialog
 
 # Clock and language
 echo -e "\nSetting the timezone and setting hw clock."
@@ -20,10 +20,6 @@ locale-gen
 # Hostname
 echo -e "\nCreating a host name"
 vim /etc/hostname
-
-# Useful packages
-echo -e "\nInstalling wifi related packages and "
-pacman -S iw wpa_supplicant dialog
 
 # Creating users and passwords
 echo -e "\nCreating root password."
@@ -40,8 +36,13 @@ fi
 # Bootloader
 echo -e "\nInstalling bootloader (grub)"
 pacman -S grub efibootmgr
-echo "Device to install: "
-read ANSW
+ANSW=n
+while [ $ANSW = n ]; do
+    echo "Device to install: "
+    read ANSW
+    echo "Device is $ANSW, right? [y/n]"
+    Read_lower
+done
 grub-install $ANSW
 grub-mkconfig -o /boot/grub/grub.cfg
 
@@ -61,16 +62,14 @@ echo "Do you want to install a desktop environment? [y/n]:"
 Read_lower
 if [ $ANSW = y ]; then
     ANSW=0
-    while [ $ANSW -lt 1 -o $ANSW -gt 3 ]; do
+    while [ $ANSW -lt 1 -o $ANSW -gt 2 ]; do
         echo "1 - Gnome (minimal)"
         echo "2 - i3"
-        echo "3 - Gnome + i3"
-        read $ANSW
+        read ANSW
     done
     case $ANSW in
-        1) pacman -S gnome-shell;;
+        1) pacman -S gnome-shell gdm;;
         2) pacman -S i3 && echo "exec i3" >> /home/lucasbordignon/.xinitrc;;
-        3) ;;
     esac
 fi
 

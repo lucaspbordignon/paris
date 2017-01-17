@@ -73,6 +73,7 @@ Format() {
     echo "Format de partitions."
     ANSW=n
     while [ $ANSW != y ]; do 
+        fdisk -l $HARD_DISK
         echo "Boot partition:"
         read ANSW
         mkfs.fat -F32 -n Boot $ANSW
@@ -95,6 +96,7 @@ Format() {
 }
 
 Mount() {
+    fdisk -l $HARD_DISK
     echo "Mounting root, type the partition:"
     read ANSW
     mount $ANSW /mnt
@@ -125,6 +127,8 @@ Genfstab() {
 
 # Init
 echo "Welcome to PARIS (Personal Arch linux Installation Script)."
+echo "Updating the pacman database, for future use."
+pacman -Syy
 Menu
 case $CHOICE in
     0) return ;;
