@@ -7,7 +7,7 @@ Read_lower() {
 }
 
 echo "Installing script dependencies and util packages."
-pacman -Sy yaourt vim xorg-server xorg-xinit iw wpa_supplicant dialog
+pacman -Sy vim xorg-server xorg-xinit iw wpa_supplicant dialog intel-ucode
 
 # Clock and language
 echo -e "\nSetting the timezone and setting hw clock."
@@ -40,7 +40,7 @@ ANSW=n
 while [ $ANSW = n ]; do
     echo "Device to install: "
     read ANSW
-    echo "Device is $ANSW, right? [y/n]"
+    echo "DEVICE is $ANSW, right? [y/n]"
     Read_lower
 done
 grub-install $ANSW
