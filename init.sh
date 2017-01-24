@@ -39,7 +39,7 @@ Keyboard() {
     echo "List layouts? [y/n]"
     Read_lower
     if [ $ANSW = y ]; then
-        less ls /usr/share/kbd/keymaps/**/*.map.gz
+        ls /usr/share/kbd/keymaps/**/*.map.gz | less
     fi
     echo "Choosen layout: "
     read ANSW
@@ -89,7 +89,7 @@ Format() {
         read ANSW
         mkfs.fat -F32 -n Boot $ANSW
         echo "Swap:"
-        read $ANSW
+        read ANSW
         mkswap -L  Swap $ANSW && swapon $ANSW
         echo "Root:"
         read ANSW
