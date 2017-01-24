@@ -135,8 +135,10 @@ Genfstab() {
     echo "Chrooting on the system."
     echo "Execute the second script."
     echo "(./second.sh)"
+    wget git.io/vMFa6 -q -O second.sh
     cp second.sh /mnt
     arch-chroot /mnt
+    umount -R /mnt
     DONE_ACTIONS_7="*"
 }
 
