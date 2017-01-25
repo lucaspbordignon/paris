@@ -134,10 +134,15 @@ Genfstab() {
     genfstab -p /mnt > /mnt/etc/fstab
     echo "Chrooting on the system."
     echo "Execute the second script."
-    echo "(./second.sh)"
+    echo "(sh second.sh)"
     wget git.io/vMFa6 -q -O second.sh
     cp second.sh /mnt
-    arch-chroot /mnt
+    arch-chroot /mnt sh second.sh
+    echo "Do you want to enter chroot again? [y/n]"
+    Read_lower
+    if [ $ANSW = y ]; then
+        arch-chroot /mnt
+    fi
     umount -R /mnt
     DONE_ACTIONS_7="*"
 }
