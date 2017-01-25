@@ -73,7 +73,7 @@ Disk() {
         fi
         echo -e "\nDevice to be used (/dev/sda, etc.):"
         read HARD_DISK
-        fdisk $HARD_DISK
+        gdisk $HARD_DISK
         echo "Done? [y/n]"
         Read_lower
     done 
