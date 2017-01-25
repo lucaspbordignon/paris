@@ -50,7 +50,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "Install bumblebee? [y/n]"
 Read_lower
 if [ $ANSW = y ]; then
-    pacman -S bumblebee mesa xf86-video-intel nvidia lib32-virtualgl lib32-nvidia-utils lib32-mesa-libgl mesa-demos
+    pacman -S bumblebee mesa xf86-video-intel nvidia  mesa-demos
     echo "Type the user name to be added to the bumblebee group:"
     read ANSW
     gpasswd -a $ANSW bumblebee
