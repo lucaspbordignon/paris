@@ -39,7 +39,7 @@ Keyboard() {
     echo "List layouts? [y/n]"
     Read_lower
     if [ $ANSW = y ]; then
-        ls /usr/share/kbd/keymaps/**/*.map.gz | less
+        ls /usr/share/kbd/keymaps/**/*.map.gz
     fi
     echo "Choosen layout: "
     read ANSW
@@ -108,17 +108,22 @@ Format() {
 }
 
 Mount() {
-    fdisk -l $HARD_DISK
-    echo "Mounting root, type the partition:"
-    read ANSW
-    mount $ANSW /mnt
-    echo "Mounting home, type the partition:"
-    read ANSW
-    mkdir /mnt/home && mount $ANSW /mnt/home
-    echo "Mounting boot, type the partition:"
-    echo "(note that grub will be used.)"
-    read ANSW
-    mkdir -p /mnt/boot/efi && mount $ANSW /mnt/boot/efi
+    ANSW=n
+    while [ $ANSW != y ]; do
+        fdisk -l $HARD_DISK
+        echo "Mounting root, type the partition:"
+        read ANSW
+        mount $ANSW /mnt
+        echo "Mounting home, type the partition:"
+        read ANSW
+        mkdir /mnt/home && mount $ANSW /mnt/home
+        echo "Mounting boot, type the partition:"
+        echo "(note that grub will be used.)"
+        read ANSW
+        mkdir -p /mnt/boot/efi && mount $ANSW /mnt/boot/efi
+        echo "Done? [y/n]"
+        Read_lower
+    done
     DONE_ACTIONS_5="*"
 }
 
@@ -133,12 +138,11 @@ Genfstab() {
     echo "Generating file systems table"
     genfstab -p /mnt > /mnt/etc/fstab
     echo "Chrooting on the system."
-    echo "Execute the second script."
-    echo "(sh second.sh)"
-    wget git.io/vMFa6 -q -O second.sh
+    wget git.io/vMFa6 -qO second.sh
     cp second.sh /mnt
     arch-chroot /mnt sh second.sh
     echo "Do you want to enter chroot again? [y/n]"
+    echo "Obs: If enter again, after exit, run 'umount -R /mnt'"
     Read_lower
     if [ $ANSW = y ]; then
         arch-chroot /mnt
@@ -150,7 +154,7 @@ Genfstab() {
 # Init
 echo "Welcome to PARIS (Personal Arch linux Installation Script)."
 echo "Updating the pacman database, for future use."
-pacman -Syy
+pacman -Sy
 EXIT=0
 while [ $EXIT != 1 ]; do
     Menu
