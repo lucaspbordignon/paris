@@ -16,7 +16,7 @@ Menu() {
     do
         echo "Choose one option"
         echo "[$DONE_ACTIONS_0] 1 - Set keyboard"
-        echo "[$DONE_ACTIONS_1] 2 - Connect to wifi"
+        echo "[$DONE_ACTIONS_1] 2 - Test the internet connection"
         echo "[$DONE_ACTIONS_2] 3 - Update system clock"
         echo "[$DONE_ACTIONS_3] 4 - Partition the disk"
         echo "[$DONE_ACTIONS_4] 5 - Format the partitions"
@@ -28,7 +28,7 @@ Menu() {
     done
 }
 
-# Useful
+# Reads a keyboard input and returns the lower case version of it
 Read_lower() {
     read ANSW
     ANSW=$( echo $ANSW | tr "[:upper:]" "[:lower:]" ) # Convert to lower case
@@ -39,7 +39,7 @@ Keyboard() {
     echo "List layouts? [y/n]"
     Read_lower
     if [ $ANSW = y ]; then
-        ls /usr/share/kbd/keymaps/**/*.map.gz
+        ls /usr/share/kbd/keymaps/i386/qwerty | less
     fi
     echo "Choosen layout: "
     read ANSW
@@ -47,14 +47,8 @@ Keyboard() {
     DONE_ACTIONS_0="*"
 }
 
-# Connects to wifi and tests the connection
-Wifi() {
-    ANSW=n
-    while [ $ANSW != y ]; do
-        wifi-menu
-        echo "Done? [y/n]"
-        Read_lower
-    done
+# Tests the connection
+Internet() {
     echo "Test internet? [y/n]"
     Read_lower
     if [ $ANSW = y ]; then
@@ -63,6 +57,7 @@ Wifi() {
     DONE_ACTIONS_1="*"
 }
 
+# Partition the disk
 Disk() {
     ANSW=n
     while [ $ANSW != y ]; do
@@ -80,6 +75,7 @@ Disk() {
     DONE_ACTIONS_3="*"
 }
 
+# Format the disk
 Format() {
     echo "Format de partitions."
     ANSW=n
@@ -107,6 +103,7 @@ Format() {
     DONE_ACTIONS_4="*"
 }
 
+# Mount the partitions
 Mount() {
     ANSW=n
     while [ $ANSW != y ]; do
@@ -127,6 +124,7 @@ Mount() {
     DONE_ACTIONS_5="*"
 }
 
+# Change mirrors and install the base
 Mirrorlist() {
     vim /etc/pacman.d/mirrorlist
     echo "Installing the base packages."
@@ -134,6 +132,7 @@ Mirrorlist() {
     DONE_ACTIONS_6="*"
 }
 
+# Generate the fstab and access the system (chroot)
 Genfstab() {
     echo "Generating file systems table"
     genfstab -p /mnt > /mnt/etc/fstab
@@ -161,7 +160,7 @@ while [ $EXIT != 1 ]; do
     case $CHOICE in
         0) EXIT=1 ;;
         1) Keyboard;;
-        2) Wifi;;
+        2) Internet;;
         3) echo "Updating..." && timedatectl set-ntp true && DONE_ACTIONS_2="*";;
         4) Disk;;
         5) Format;;
