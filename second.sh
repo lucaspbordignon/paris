@@ -24,7 +24,7 @@ vim /etc/hostname
 # Creating users and passwords
 echo -e "\nCreating root password."
 passwd
-echo "Create a new user?[y/n]"
+echo "Create a new user? [y/n]"
 Read_lower
 if [ $ANSW = y ]; then
     echo "User name:"
@@ -50,7 +50,9 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "Install bumblebee? [y/n]"
 Read_lower
 if [ $ANSW = y ]; then
-    pacman -S bumblebee mesa xf86-video-intel nvidia  mesa-demos
+    # Enable multilib repo
+    vim /etc/pacman.conf
+    pacman -Sy bumblebee mesa xf86-video-intel nvidia lib32-virtualgl lib32-nvidia-utils lib32-mesa-libgl mesa-demos
     echo "Type the user name to be added to the bumblebee group:"
     read ANSW
     gpasswd -a $ANSW bumblebee
