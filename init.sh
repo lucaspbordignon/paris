@@ -14,6 +14,7 @@ Menu() {
     CHOICE=-1
     while [ $CHOICE -lt 0 -o $CHOICE -gt 8 ]
     do
+        echo "----------------------------------------------------------------"
         echo "Choose one option"
         echo "[$DONE_ACTIONS_0] 1 - Set keyboard"
         echo "[$DONE_ACTIONS_1] 2 - Test the internet connection"
@@ -25,6 +26,7 @@ Menu() {
         echo "[$DONE_ACTIONS_7] 8 - Genfstab & Chroot"
         echo "0 - Exit script"
         read CHOICE
+        echo "----------------------------------------------------------------"
     done
 }
 
