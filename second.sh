@@ -71,7 +71,7 @@ if [ $ANSW = y ]; then
     done
     case $ANSW in
         1) pacman -S gnome-shell gdm arc-icon-theme termite gnome-control-center networkmanager && systemctl enable gdm;;
-        2) pacman -S i3 && echo "exec i3" >> /home/lucasbordignon/.xinitrc;;
+        2) pacman -S i3 gdm && echo "exec i3" >> /home/lucasbordignon/.xinitrc && systemctl enable gdm;;
     esac
 fi
 
