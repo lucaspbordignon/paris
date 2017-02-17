@@ -1,0 +1,8 @@
+- Single boot system.
+- UEFI installation (/boot formated as an EFI partititon).
+- Using gdisk to partition the disk.
+- / and /home are formated in ext4.
+- Timezone set to America/Sao_Paulo.
+- Bootloader used is grub.
+- If bumblebee isn't installed (to used intel and nvidia graphics togheter), none other driver will be installed.
+- Installing bumblebee: Using the proprietary nvidia drivers.
