@@ -70,10 +70,17 @@ if [ $ANSW = y ]; then
         read ANSW
     done
     case $ANSW in
-        1) pacman -S gnome-shell gdm arc-icon-theme termite gnome-control-center networkmanager && systemctl enable gdm;;
+        1) Install_gnome;;
         2) pacman -S i3 gdm && echo "exec i3" >> /home/lucasbordignon/.xinitrc && systemctl enable gdm;;
     esac
 fi
 
 # Removing this script from the system
 rm second.sh
+
+###############################################################################
+Install_gnome() {
+   pacman -S gnome-shell gdm arc-icon-theme termite gnome-control-center networkmanager
+   systemctl enable gdm
+   systemctl enable NetworkManager
+}
