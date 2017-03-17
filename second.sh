@@ -1,10 +1,33 @@
 #!/bin/sh
 
+
 # Useful
 Read_lower() {
     read ANSW
     ANSW=$( echo $ANSW | tr "[:upper:]" "[:lower:]" ) # Convert to lower case
 }
+
+Install_gnome() {
+   pacman -S gnome-shell gdm arc-icon-theme termite gnome-control-center networkmanager
+   systemctl enable gdm
+   systemctl enable NetworkManager
+}
+
+Install_i3() {
+    ANSW=n
+    while [ $ANSW != y ]; do
+        echo "User to be added the 'exec i3' command (username):"
+        read ANSW
+        USER_NAME=$ANSW
+        echo "Username is $USER_NAME, right? [y/n]"
+        Read_lower
+    done 
+    pacman -S i3 gdm
+    echo "exec i3" >> /home/$USER_NAME/.xinitrc 
+    systemctl enable gdm
+}
+
+###############################################################################
 
 echo "Installing script dependencies and util packages."
 pacman -Sy vim xorg-server xorg-xinit iw wpa_supplicant dialog intel-ucode
@@ -46,8 +69,9 @@ done
 grub-install $ANSW
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# Bumblebee
-echo "Install bumblebee? [y/n]"
+# Bumblebee and video drivers
+echo "Installing video drivers."
+echo "Do you want to install bumblebee? (If you have intel + nvidia gpus on the same system)[y/n]"
 Read_lower
 if [ $ANSW = y ]; then
     # Enable multilib repo
@@ -57,6 +81,12 @@ if [ $ANSW = y ]; then
     read ANSW
     gpasswd -a $ANSW bumblebee
     systemctl enable bumblebeed.service
+else
+    echo "Do you want to install intel drivers? [y/n]"
+    Read_lower
+    if [ $ANSW = y ]; then
+        sudo pacman -S xf86-video-intel vulkan-intel mesa
+    fi
 fi
 
 # Desktop Environment
@@ -71,16 +101,9 @@ if [ $ANSW = y ]; then
     done
     case $ANSW in
         1) Install_gnome;;
-        2) pacman -S i3 gdm && echo "exec i3" >> /home/lucasbordignon/.xinitrc && systemctl enable gdm;;
+        2) Install_i3;;
     esac
 fi
 
 # Removing this script from the system
 rm second.sh
-
-###############################################################################
-Install_gnome() {
-   pacman -S gnome-shell gdm arc-icon-theme termite gnome-control-center networkmanager
-   systemctl enable gdm
-   systemctl enable NetworkManager
-}
