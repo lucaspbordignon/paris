@@ -79,7 +79,7 @@ Disk() {
 
 # Format the disk
 Format() {
-    echo "Format de partitions."
+    echo "Format the partitions."
     ANSW=n
     while [ $ANSW != y ]; do 
         fdisk -l $HARD_DISK
