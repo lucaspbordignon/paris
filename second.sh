@@ -30,7 +30,7 @@ Install_i3() {
 ###############################################################################
 
 echo "Installing script dependencies and util packages."
-pacman -Sy vim xorg-server xorg-xinit iw wpa_supplicant dialog intel-ucode
+pacman -Sy vim xorg-server xorg-xinit iw wpa_supplicant dialog intel-ucode termite
 
 # Clock and language
 echo -e "\nSetting the timezone and setting hw clock."
