@@ -27,6 +27,18 @@ Install_i3() {
     systemctl enable gdm
 }
 
+Install_yaourt() {
+    git clone https://aur.archlinux.org/package-query.git
+    cd package-query
+    makepkg -si
+    cd ..
+    git clone https://aur.archlinux.org/yaourt.git
+    cd yaourt
+    makepkg -si
+    cd ..
+    rm -rf package-query yaourt
+}
+
 ###############################################################################
 
 echo "Installing script dependencies and util packages."
@@ -90,6 +102,10 @@ else
         sudo pacman -S xf86-video-intel vulkan-intel mesa
     fi
 fi
+
+# AUR pacman frontend
+echo "Installing Yaourt..."
+Instal_yaourt
 
 # Desktop Environment
 echo "Do you want to install a desktop environment? [y/n]:"
