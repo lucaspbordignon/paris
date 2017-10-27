@@ -87,7 +87,8 @@ echo "Do you want to install bumblebee? (If you have intel + nvidia gpus on the 
 Read_lower
 if [ $ANSW = y ]; then
     # Enable multilib repo
-    echo "Uncomment the multilib repository.\nPress enter to continue..."
+    echo "Uncomment the multilib repository."
+    echo "Press enter to continue..."
     read ANSW
     vim /etc/pacman.conf
     pacman -Sy bumblebee mesa xf86-video-intel nvidia lib32-virtualgl lib32-nvidia-utils lib32-mesa-libgl mesa-demos
@@ -105,7 +106,7 @@ fi
 
 # AUR pacman frontend
 echo "Installing Yaourt..."
-Instal_yaourt
+Install_yaourt
 
 # Desktop Environment
 echo "Do you want to install a desktop environment? [y/n]:"
